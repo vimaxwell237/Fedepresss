@@ -1,0 +1,182 @@
+/* ===== Global Box-Sizing & Reset ===== */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body, html {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  font-family: 'Segoe UI', sans-serif;
+  background: #f4f4f4;
+  color: #333;
+}
+
+/* ===== Container ===== */
+.track-page {
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 1rem;
+}
+
+/* ===== Headings & Text ===== */
+.track-page h1 {
+  margin-bottom: 0.5rem;
+  font-size: 2rem;
+  color: #4d148c;
+}
+.track-page p {
+  margin: 0.5rem 0;
+  line-height: 1.4;
+}
+.track-page h2 {
+  margin-top: 1.5rem;
+  font-size: 1.5rem;
+  color: #333;
+}
+.track-page h3 {
+  margin-top: 1rem;
+  font-size: 1.2rem;
+  color: #4d148c;
+}
+
+/* ===== Summary Card ===== */
+.summary-card {
+  background: #fff;
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+  margin-bottom: 2rem;
+}
+.summary-card p {
+  margin: 0.5rem 0;
+}
+.summary-card .label {
+  font-weight: 600;
+}
+
+/* ===== Progress Bar ===== */
+.progress-bar {
+  position: relative;
+  margin: 2rem 0;
+  padding-top: 30px;
+}
+.progress-bar::before {
+  content: '';
+  position: absolute;
+  top: 30px;
+  left: 5%;
+  width: 90%;
+  height: 4px;
+  background: #ddd;
+  border-radius: 2px;
+  z-index: 0;
+}
+.fill-bar {
+  position: absolute;
+  top: 30px;
+  left: 5%;
+  height: 4px;
+  background: #4d148c;
+  border-radius: 2px;
+  z-index: 1;
+  transition: width 0.5s ease;
+}
+
+/* ===== Steps ===== */
+.progress-step {
+  position: relative;
+  display: inline-block;
+  width: 23%;
+  text-align: center;
+  z-index: 2;
+}
+.progress-step .icon {
+  font-size: 1.6rem;
+  background: #ccc;
+  color: #fff;
+  width: 44px;
+  height: 44px;
+  margin: 0 auto 0.5rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.progress-step.active .icon {
+  background: #4d148c;
+}
+.progress-step span {
+  font-size: 0.9rem;
+  color: #666;
+}
+.progress-step.active span {
+  color: #4d148c;
+}
+
+/* ===== History List ===== */
+.history-list {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0;
+}
+.history-list li {
+  background: #fff;
+  margin-bottom: 0.5rem;
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  font-size: 0.95rem;
+  display: flex;
+  justify-content: space-between;
+}
+.history-list li .status {
+  font-weight: 600;
+}
+
+/* ===== Back Link ===== */
+.back-link {
+  display: inline-block;
+  margin-top: 1.5rem;
+  color: #4d148c;
+  text-decoration: none;
+  font-weight: bold;
+}
+.back-link:hover {
+  text-decoration: underline;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 600px) {
+  .track-page {
+    padding: 1rem;
+    margin: 1rem auto;
+  }
+
+  .summary-card {
+    padding: 0.75rem;
+  }
+
+  .progress-bar {
+    padding-top: 50px;
+  }
+  .progress-bar::before,
+  .fill-bar {
+    top: 50px;
+  }
+  .progress-step {
+    width: 100%;
+    margin-bottom: 1rem;
+  }
+  .progress-step .icon {
+    width: 36px;
+    height: 36px;
+    font-size: 1.2rem;
+  }
+  .history-list li {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

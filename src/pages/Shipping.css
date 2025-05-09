@@ -1,0 +1,202 @@
+/* Full Background Wrapper with Image and Overlay */
+.shipping-bg-wrapper {
+  position: relative;
+  background-image: url('/images/shipping-bg.jpg'); /* 🔁 Update this path */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  min-height: 100vh;
+  padding: 3rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Optional Dark Overlay for better text contrast */
+.bg-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 0;
+}
+
+/* Main Content Area */
+.shipping-page {
+  position: relative;
+  z-index: 1;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #333;
+  background-color: rgba(255, 255, 255, 0.75); /* Semi-transparent */
+  backdrop-filter: blur(6px); /* Frosted glass effect */
+  -webkit-backdrop-filter: blur(6px); /* Safari support */
+  padding: 2rem;
+  max-width: 900px;
+  width: 100%;
+  margin: auto;
+  border-radius: 12px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+}
+
+/* Hero */
+.shipping-hero {
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+.shipping-hero h1 {
+  font-size: 2.5rem;
+  color: #4d148c;
+  margin-bottom: 0.5rem;
+}
+.shipping-hero p {
+  font-size: 1.1rem;
+  color: #555;
+}
+
+/* Rate Calculator */
+.rate-calculator {
+  max-width: 600px;
+  margin: 0 auto 3rem;
+  background: #f9f9f9;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+.rate-calculator form {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+.form-row {
+  display: flex;
+  flex-direction: column;
+}
+.form-row label {
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+.form-row input,
+.form-row select {
+  padding: 0.6rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 1rem;
+}
+.estimate-result {
+  text-align: center;
+  margin-top: 1.5rem;
+}
+.estimate-result h3 {
+  font-size: 1.4rem;
+  color: #4d148c;
+}
+.cost {
+  font-size: 2rem;
+  margin: 0.5rem 0 1rem;
+  color: #ff6600;
+}
+
+/* Info Cards */
+.shipping-info {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  justify-content: center;
+  margin-bottom: 3rem;
+}
+.info-card {
+  background: #fff;
+  padding: 1.5rem;
+  max-width: 300px;
+  flex: 1 1 250px;
+  border-radius: 10px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+  text-align: center;
+}
+.info-card h4 {
+  font-size: 1.3rem;
+  color: #4d148c;
+  margin-bottom: 0.5rem;
+}
+.info-card p {
+  font-size: 1rem;
+  color: #555;
+}
+
+/* Final CTA */
+.shipping-cta {
+  text-align: center;
+  padding: 3rem 1rem;
+  background: #f4f5f6;
+  border-radius: 10px;
+}
+.shipping-cta h2 {
+  font-size: 2rem;
+  color: #4d148c;
+  margin-bottom: 1rem;
+}
+.shipping-cta p {
+  font-size: 1.1rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Buttons */
+.cta-button {
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.cta-button.primary {
+  background-color: #4d148c;
+  color: white;
+}
+.cta-button.secondary {
+  background-color: #ff6600;
+  color: white;
+}
+
+/* Overlay Fade-In Animation */
+.bg-overlay {
+  position: absolute;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.4);
+  z-index: 0;
+  animation: fadeIn 1s ease-in-out forwards;
+  opacity: 0;
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
+}
+
+/* Loader Styles */
+.loader-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #000;
+  color: #fff;
+  font-size: 1.5rem;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.spinner {
+  border: 6px solid #f3f3f3;
+  border-top: 6px solid #4d148c;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite;
+  margin-right: 1rem;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+

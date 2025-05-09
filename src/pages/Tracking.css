@@ -1,0 +1,260 @@
+/* ===== Global Box-Sizing & Reset ===== */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+body, html {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  background: #f4f4f4;
+  color: #333;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+/* ===== Container ===== */
+.track-page {
+  width: 100%;
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 1rem;
+}
+
+/* ===== FORM-ONLY View (if used for /tracking) ===== */
+.track-page.form-only {
+  text-align: center;
+}
+.track-page.form-only h1 {
+  margin-bottom: 1.5rem;
+  font-size: 2rem;
+}
+.tracking-form {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
+}
+.tracking-form input {
+  flex: 1;
+  padding: 0.6rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+.tracking-form button {
+  padding: 0.6rem 1.2rem;
+  font-size: 1rem;
+  background: #4d148c;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.tracking-form button:hover {
+  background: #3b0f70;
+}
+
+/* ===== RESULTS View ===== */
+/* Summary Card */
+.summary-card {
+  background: #fff;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  margin-bottom: 2rem;
+}
+.summary-card h1 {
+  margin-top: 0;
+  font-size: 1.8rem;
+  color: #4d148c;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.summary-card p {
+  margin: 0.5rem 0;
+  font-size: 1rem;
+}
+.summary-card .label {
+  font-weight: 600;
+}
+.summary-card .icon-inline {
+  vertical-align: middle;
+  margin-right: 0.5rem;
+  color: #4d148c;
+}
+
+/* Progress Bar */
+.progress-bar {
+  position: relative;
+  margin: 2rem 0;
+  padding-top: 30px;
+}
+.progress-bar::before {
+  content: '';
+  position: absolute;
+  top: 30px;
+  left: 5%;
+  width: 90%;
+  height: 4px;
+  background: #ddd;
+  border-radius: 2px;
+  z-index: 0;
+}
+.fill-bar {
+  position: absolute;
+  top: 30px;
+  left: 5%;
+  height: 4px;
+  background: #4d148c;
+  border-radius: 2px;
+  z-index: 1;
+  transition: width 0.5s ease;
+}
+
+/* Progress Steps */
+.progress-step {
+  position: relative;
+  display: inline-block;
+  width: 23%;
+  text-align: center;
+  z-index: 2;
+}
+.progress-step .icon {
+  font-size: 1.6rem;
+  background: #ccc;
+  color: #fff;
+  width: 44px;
+  height: 44px;
+  margin: 0 auto 0.5rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.progress-step.active .icon {
+  background: #4d148c;
+}
+.progress-step span {
+  font-size: 0.9rem;
+  color: #666;
+}
+.progress-step.active span {
+  color: #4d148c;
+}
+
+/* Current Status */
+.current-status {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.4rem;
+  margin: 1.5rem 0 1rem;
+}
+.current-status svg {
+  color: #4d148c;
+}
+
+/* History List */
+.history-list {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0;
+}
+.history-list li {
+  background: #fff;
+  margin-bottom: 0.5rem;
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.95rem;
+}
+.history-list li .status {
+  font-weight: 600;
+}
+
+/* Back Link */
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #4d148c;
+  text-decoration: none;
+  font-weight: bold;
+  margin-top: 1.5rem;
+}
+.back-link:hover {
+  text-decoration: underline;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 600px) {
+  .track-page {
+    padding: 1rem;
+    margin: 1rem auto;
+  }
+
+  /* Form stacks */
+  .tracking-form {
+    flex-direction: column;
+    width: 100%;
+  }
+  .tracking-form button {
+    width: 100%;
+  }
+
+  /* Progress bar taller to avoid overlap */
+  .progress-bar {
+    padding-top: 50px;
+  }
+  .progress-bar::before,
+  .fill-bar {
+    top: 50px;
+  }
+
+  /* Steps stack vertically */
+  .progress-step {
+    width: 100%;
+    margin-bottom: 1rem;
+  }
+  .progress-step .icon {
+    width: 36px;
+    height: 36px;
+    font-size: 1.2rem;
+  }
+
+  /* History items */
+  .history-list li {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+/* ---- Loading Overlay ---- */
+.loader-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 60vh;           /* roughly center in viewport */
+  text-align: center;
+  color: var(--primary, #4d148c);
+}
+
+.spinner {
+  width: 48px;
+  height: 48px;
+  border: 5px solid #ccc;
+  border-top-color: var(--primary, #4d148c);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin-bottom: 1rem;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}

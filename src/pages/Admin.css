@@ -1,0 +1,122 @@
+/* src/pages/Admin.css */
+
+/* Container */
+.admin-page {
+  max-width: 1000px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+  font-family: 'Segoe UI', sans-serif;
+  color: #333;
+}
+
+/* Section Titles */
+.admin-section {
+  background: #f9f9f9;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+.admin-section h2 {
+  margin-top: 0;
+  color: #4d148c;
+}
+
+/* Form Styles */
+.admin-form {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+.admin-form input,
+.admin-form select,
+.admin-form textarea {
+  width: 100%;
+  padding: 0.6rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+.admin-form textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+.admin-form .cta-button {
+  justify-self: start;
+}
+.error {
+  color: #c00;
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+/* Shipment List */
+.shipment-list {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0 0;
+}
+.shipment-item {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem;
+  border-bottom: 1px solid #e0e0e0;
+}
+.shipment-item:last-child {
+  border-bottom: none;
+}
+.shipment-item div:first-child {
+  flex: 1 1 300px;
+  margin-bottom: 0.5rem;
+}
+.status-controls {
+  display: flex;
+  gap: 0.5rem;
+}
+.status-controls select {
+  padding: 0.4rem;
+  border-radius: 4px;
+}
+.status-controls .cta-button {
+  padding: 0.4rem 0.8rem;
+}
+
+/* Buttons */
+.cta-button {
+  background-color: #0072ce;
+  color: #fff;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background 0.2s;
+}
+.cta-button.secondary {
+  background-color: #ff6600;
+}
+.cta-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.cta-button:hover:not(:disabled) {
+  background-color: #005bb5;
+}
+.cta-button.secondary:hover:not(:disabled) {
+  background-color: #e65500;
+}
+
+/* Responsive */
+@media (min-width: 600px) {
+  .admin-form {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .admin-form textarea {
+    grid-column: span 2;
+  }
+  .shipment-item {
+    flex-wrap: nowrap;
+  }
+}
