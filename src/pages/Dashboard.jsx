@@ -1,22 +1,21 @@
-// src/pages/Dashboard.jsx
 import React, { useContext } from 'react';
-import { Link }            from 'react-router-dom';
+import { Link }           from 'react-router-dom';
 import { ShipmentsContext } from '../context/ShipmentsContext';
 import { AuthContext }      from '../context/AuthContext';
 import './Dashboard.css';
 
 const Dashboard = () => {
   const { shipments } = useContext(ShipmentsContext);
-  const { userId }    = useContext(AuthContext);
+  const { userEmail } = useContext(AuthContext);
 
-  // Only show shipments belonging to this user
-  const myShipments = shipments.filter(s => s.ownerId === userId);
+  // Only show shipments that have this userEmail as ownerEmail
+  const myShipments = shipments.filter(s => s.ownerEmail === userEmail);
 
   return (
     <div className="dashboard-page">
       <header className="dashboard-header">
-        <h1>Your Dashboard</h1>
-        <p>Welcome back! Here are your shipments.</p>
+        <h1>Welcome, {userEmail}!</h1>
+        <p>Manage and track your shipments below.</p>
       </header>
 
       <section className="dashboard-actions">
@@ -41,7 +40,7 @@ const Dashboard = () => {
                 <th>Tracking #</th>
                 <th>Route</th>
                 <th>Status</th>
-                <th>Action</th>
+                <th>View</th>
               </tr>
             </thead>
             <tbody>

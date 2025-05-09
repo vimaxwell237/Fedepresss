@@ -1,9 +1,10 @@
+// src/pages/Quote.jsx
 import React, { useState } from 'react';
 import axios from 'axios';
 import './Quote.css';
 
 const Quote = () => {
-  const [form, setForm] = useState({
+  const [form, setForm]     = useState({
     fullName: '',
     email: '',
     origin: '',
@@ -13,8 +14,7 @@ const Quote = () => {
     deliveryType: '',
     details: ''
   });
-  const [message, setMessage] = useState('');
-  const [error, setError] = useState('');
+  const [status, setStatus] = useState({ loading:false, message:'', error:'' });
 
   const handleChange = e => {
     setForm(f => ({ ...f, [e.target.name]: e.target.value }));
@@ -22,19 +22,20 @@ const Quote = () => {
 
   const handleSubmit = async e => {
     e.preventDefault();
-    setMessage('');
-    setError('');
+    setStatus({ loading:true, message:'', error:'' });
     try {
-      await axios.post('http://localhost:5000/api/quote', form, {
-        headers: { 'Content-Type': 'application/json' }
-      });
-      setMessage('Quote request sent successfully!');
+      await axios.post(
+        `${import.meta.env.VITE_API_URL}/api/quote`,
+        form,
+        { headers: { 'Content-Type':'application/json' } }
+      );
+      setStatus({ loading:false, message:'✅ Quote request sent successfully!', error:'' });
       setForm({
-        fullName: '', email: '', origin: '', destination: '',
-        weight: '', packageSize: '', deliveryType: '', details: ''
+        fullName:'', email:'', origin:'', destination:'',
+        weight:'', packageSize:'', deliveryType:'', details:''
       });
-    } catch (err) {
-      setError('Failed to send quote request. Try again.');
+    } catch {
+      setStatus({ loading:false, message:'', error:'❌ Failed to send quote request. Try again.' });
     }
   };
 
@@ -44,11 +45,24 @@ const Quote = () => {
       <p>Fill out the form below to receive a custom quote for your shipment.</p>
 
       <form className="quote-form" onSubmit={handleSubmit}>
-        <input name="fullName" value={form.fullName} onChange={handleChange} placeholder="Full Name" required />
-        <input name="email" type="email" value={form.email} onChange={handleChange} placeholder="Email Address" required />
-        <input name="origin" value={form.origin} onChange={handleChange} placeholder="Origin (City, State)" required />
-        <input name="destination" value={form.destination} onChange={handleChange} placeholder="Destination (City, State)" required />
-        <input name="weight" type="number" value={form.weight} onChange={handleChange} placeholder="Weight (kg)" required />
+        {['fullName','email','origin','destination','weight'].map((field, i) => (
+          <input
+            key={i}
+            name={field}
+            type={field==='email'?'email':field==='weight'?'number':'text'}
+            value={form[field]}
+            onChange={handleChange}
+            placeholder={
+              field==='fullName'   ? 'Full Name' :
+              field==='email'      ? 'Email Address' :
+              field==='origin'     ? 'Origin (City, State)' :
+              field==='destination'? 'Destination (City, State)' :
+              'Weight (kg)'
+            }
+            required
+            step={field==='weight'?'0.1':undefined}
+          />
+        ))}
 
         <select name="packageSize" value={form.packageSize} onChange={handleChange} required>
           <option value="">Select Package Size</option>
@@ -63,12 +77,23 @@ const Quote = () => {
           <option value="express">Express</option>
         </select>
 
-        <textarea name="details" value={form.details} onChange={handleChange} placeholder="Additional details (optional)" rows="4" />
+        <textarea
+          name="details"
+          value={form.details}
+          onChange={handleChange}
+          placeholder="Additional details (optional)"
+          rows="4"
+        />
 
-        {message && <p className="success">{message}</p>}
-        {error && <p className="error">{error}</p>}
+        <button type="submit" disabled={status.loading}>
+          {status.loading
+            ? <span className="spinner" aria-label="Sending..." />
+            : 'Request Quote'
+          }
+        </button>
 
-        <button type="submit">Request Quote</button>
+        {status.message && <p className="success">{status.message}</p>}
+        {status.error   && <p className="error">{status.error}</p>}
       </form>
     </div>
   );

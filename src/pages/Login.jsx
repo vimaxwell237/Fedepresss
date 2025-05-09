@@ -1,14 +1,14 @@
 // src/pages/Login.jsx
 import React, { useState, useContext } from 'react';
-import { useNavigate }            from 'react-router-dom';
-import { AuthContext }            from '../context/AuthContext';
+import { useNavigate }      from 'react-router-dom';
+import { AuthContext }      from '../context/AuthContext';
 import './Auth.css';
 
 const Login = () => {
   const [form, setForm]   = useState({ username: '', password: '' });
   const [error, setError] = useState('');
-  const { login }        = useContext(AuthContext);
-  const navigate         = useNavigate();
+  const { login }         = useContext(AuthContext);
+  const navigate          = useNavigate();
 
   const handleChange = e => {
     setForm(f => ({ ...f, [e.target.name]: e.target.value }));
@@ -24,11 +24,8 @@ const Login = () => {
       password: form.password
     });
 
-    if (ok) {
-      navigate('/admin');
-    } else {
-      setError('Invalid admin credentials');
-    }
+    if (ok) navigate('/admin');
+    else setError('Invalid admin credentials');
   };
 
   return (

@@ -1,48 +1,64 @@
+// src/pages/Tracking.jsx
 import React, { useState, useEffect, useContext } from 'react';
-import { useNavigate, useParams, Link } from 'react-router-dom';
-import { ShipmentsContext }                 from '../context/ShipmentsContext';
+import { useNavigate, useParams, Link }          from 'react-router-dom';
+import axios                                       from 'axios';
+import { AuthContext }                            from '../context/AuthContext';
 import './Tracking.css';
 import { FaBox, FaTruck, FaShippingFast, FaCheckCircle } from 'react-icons/fa';
+import defaultBg                                  from '../assets/images/tracking.jpg';
 
-// OPTIONAL: import a default bg image
-import defaultBg from '../assets/images/tracking.jpg';
-
-const allStages = ["Shipped", "In Transit", "Out for Delivery", "Delivered"];
-const iconMap = {
-  "Shipped":       <FaBox />,
-  "In Transit":    <FaTruck />,
+const STAGES = ["Shipped", "In Transit", "Out for Delivery", "Delivered"];
+const ICONS  = {
+  "Shipped":        <FaBox />,
+  "In Transit":     <FaTruck />,
   "Out for Delivery": <FaShippingFast />,
-  "Delivered":     <FaCheckCircle />
+  "Delivered":      <FaCheckCircle />
 };
 
 const Tracking = ({ bgImage }) => {
   const navigate       = useNavigate();
-  const { getShipment } = useContext(ShipmentsContext);
-  const { id: paramId } = useParams();
+  const { token }      = useContext(AuthContext);
+  const { id }         = useParams();           // e.g. /track/ABC123
+  const [trackingNo, setTrackingNo] = useState(id || '');
+  const [shipment,   setShipment]   = useState(null);
+  const [loading,    setLoading]    = useState(!!id);
+  const [error,      setError]      = useState(null);
 
-  const [trackingNumber, setTrackingNumber] = useState(paramId || '');
-  const [shipment, setShipment]             = useState(null);
-  const [loading, setLoading]               = useState(true);
-
+  // Fetch from back-end if we have an :id
   useEffect(() => {
-    if (paramId) {
-      const found = getShipment(paramId);
-      setShipment(found || null);
-    }
-    const t = setTimeout(() => setLoading(false), 600);
-    return () => clearTimeout(t);
-  }, [paramId, getShipment]);
+    if (!id) return;
+
+    setLoading(true);
+    setError(null);
+
+    axios.get(
+      `${import.meta.env.VITE_API_URL}/api/shipments/${id}`,
+      { headers: { Authorization: `Bearer ${token}` } }
+    )
+    .then(res => {
+      setShipment(res.data);
+    })
+    .catch(err => {
+      if (err.response?.status === 404) {
+        setError(`No shipment found for #${id}`);
+      } else {
+        setError(err.response?.data?.message || err.message);
+      }
+    })
+    .finally(() => {
+      setLoading(false);
+    });
+  }, [id, token]);
 
   const handleSubmit = e => {
     e.preventDefault();
-    const id = trackingNumber.trim().toUpperCase();
-    if (id) {
-      setLoading(true);
-      navigate(`/track/${id}`);
+    const nextId = trackingNo.trim().toUpperCase();
+    if (nextId) {
+      navigate(`/track/${nextId}`);
     }
   };
 
-  // decide background
+  // background style
   const style = {
     backgroundImage: `url(${bgImage || defaultBg})`,
     backgroundSize:   'cover',
@@ -50,17 +66,18 @@ const Tracking = ({ bgImage }) => {
     minHeight:        '100vh'
   };
 
+  // 1) Loading
   if (loading) {
     return (
       <div className="loader-wrapper">
         <div className="spinner" />
-        <span>Loading...</span>
+        <span>Loading…</span>
       </div>
     );
   }
 
-  // form-only
-  if (!paramId) {
+  // 2) No ID → just the form
+  if (!id) {
     return (
       <div className="track-page form-only" style={style}>
         <h1>Track Your Shipment</h1>
@@ -68,8 +85,8 @@ const Tracking = ({ bgImage }) => {
           <input
             type="text"
             placeholder="Enter tracking number"
-            value={trackingNumber}
-            onChange={e => setTrackingNumber(e.target.value)}
+            value={trackingNo}
+            onChange={e => setTrackingNo(e.target.value)}
             required
           />
           <button type="submit">Track</button>
@@ -78,35 +95,37 @@ const Tracking = ({ bgImage }) => {
     );
   }
 
-  // not found
-  if (paramId && !shipment) {
+  // 3) Error (not found or server error)
+  if (error) {
     return (
       <div className="track-page" style={style}>
-        <h1>No shipment found for #{paramId}</h1>
-        <Link to="/tracking" className="back-link">← Try another</Link>
+        <h1>{error}</h1>
+        <Link to="/tracking" className="back-link">← Try another tracking #</Link>
       </div>
     );
   }
 
-  // results
-  const currentIndex    = allStages.indexOf(shipment.status);
-  const progressPercent = ((currentIndex + 1) / allStages.length) * 100;
+  // 4) Success → show progress
+  const idx       = STAGES.indexOf(shipment.status);
+  const percent   = ((idx + 1) / STAGES.length) * 100;
 
   return (
     <div className="track-page results" style={style}>
-      <div className="overlay" />          {/* optional translucent overlay */}
+      <div className="overlay" />
 
       <div className="summary-card">
-        <h1>{iconMap[shipment.status]} Tracking #{paramId}</h1>
+        <h1>
+          {ICONS[shipment.status]} Tracking #{id}
+        </h1>
         <p><strong>Route:</strong> {shipment.origin} → {shipment.destination}</p>
         <p><strong>Weight:</strong> {shipment.weight} kg</p>
       </div>
 
       <div className="progress-bar">
-        <div className="fill-bar" style={{ width: `${progressPercent}%` }} />
-        {allStages.map((stage, idx) => (
-          <div key={stage} className={`progress-step ${idx <= currentIndex ? 'active' : ''}`}>
-            <div className="icon">{iconMap[stage]}</div>
+        <div className="fill-bar" style={{ width: `${percent}%` }} />
+        {STAGES.map((stage, i) => (
+          <div key={stage} className={`progress-step ${i <= idx ? 'active' : ''}`}>
+            <div className="icon">{ICONS[stage]}</div>
             <span>{stage}</span>
           </div>
         ))}
@@ -118,7 +137,7 @@ const Tracking = ({ bgImage }) => {
 
       <h3>History</h3>
       <ul className="history-list">
-        {shipment.history.map((h,i) => (
+        {shipment.history.map((h, i) => (
           <li key={i}>
             {new Date(h.date).toLocaleString()} – <strong>{h.status}</strong>
           </li>

@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import '../styles/Support.css';
-import bgImage from '../assets/images/suport.jpg';
+import bgImage from '../assets/images/support.jpg';
 
 const Support = () => {
-  const [formData, setFormData]     = useState({ name: '', email: '', subject: '', message: '' });
+  const [formData, setFormData]         = useState({ name: '', email: '', subject: '', message: '' });
   const [submitStatus, setSubmitStatus] = useState(null);
-  const [loading, setLoading]       = useState(false);
+  const [loading, setLoading]           = useState(false);
 
   const handleChange = e => {
     setFormData(f => ({ ...f, [e.target.name]: e.target.value }));
@@ -17,7 +17,11 @@ const Support = () => {
     setLoading(true);
     setSubmitStatus(null);
     try {
-      await axios.post('http://localhost:5000/api/support/submit', formData);
+      await axios.post(
+        `${import.meta.env.VITE_API_URL}/api/support/submit`,
+        formData,
+        { headers: { 'Content-Type': 'application/json' } }
+      );
       setSubmitStatus({ ok: true, msg: 'Ticket submitted successfully!' });
       setFormData({ name: '', email: '', subject: '', message: '' });
     } catch {
@@ -28,8 +32,11 @@ const Support = () => {
   };
 
   return (
-    <div className="support-page" style={{ backgroundImage: `url(${bgImage})` }}>
-      <div className="overlay" />
+    <div
+      className="support-page"
+      style={{ backgroundImage: `url(${bgImage})` }}
+    >
+      <div className="support-overlay" />
       <div className="ticket-form-wrapper">
         <h2>Submit a Support Ticket</h2>
         <form className="ticket-form" onSubmit={handleSubmit}>
@@ -67,8 +74,8 @@ const Support = () => {
           />
           <button type="submit" disabled={loading}>
             {loading
-              ? <span className="spinner" aria-label="Sending..." />
-              : "Submit Ticket"
+              ? <span className="spinner" aria-label="Sending…" />
+              : 'Submit Ticket'
             }
           </button>
         </form>

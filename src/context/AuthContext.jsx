@@ -1,9 +1,14 @@
-// src/context/AuthContext.jsx
 import React, { createContext, useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../api';
 
-export const AuthContext = createContext();
-// Don’t provide default login/logout in createContext — we’ll always wrap in the provider.
+export const AuthContext = createContext({
+  isAuthenticated: false,
+  userRole: null,
+  userEmail: null,
+  token: null,
+  login: async () => false,
+  logout: () => {}
+});
 
 export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -11,46 +16,39 @@ export const AuthProvider = ({ children }) => {
   const [userEmail, setUserEmail]             = useState(null);
   const [token, setToken]                     = useState(null);
 
-  // On mount, load any existing auth state
   useEffect(() => {
-    const jwt       = localStorage.getItem('token');
-    const role      = localStorage.getItem('role');
-    const email     = localStorage.getItem('email');
+    const jwt   = localStorage.getItem('token');
+    const role  = localStorage.getItem('role');
+    const email = localStorage.getItem('email');
     if (jwt && role) {
       setToken(jwt);
       setUserRole(role);
       setUserEmail(email || null);
       setIsAuthenticated(true);
-      // Optionally set axios default header:
-      axios.defaults.headers.common['Authorization'] = `Bearer ${jwt}`;
+      api.defaults.headers.common['Authorization'] = `Bearer ${jwt}`;
     }
   }, []);
 
-  // Log in (admin or user)
   const login = async ({ role, username, email, password }) => {
     try {
-      const { data } = await axios.post(
-        'http://localhost:5000/api/auth/login',
+      const payload =
         role === 'admin'
           ? { role, username, password }
-          : { role, email, password },
-        { headers: { 'Content-Type': 'application/json' } }
-      );
+          : { role, email, password };
 
+      const { data } = await api.post('/auth/login', payload);
       const { token: jwt, user } = data;
-      // Save to state
+
       setToken(jwt);
       setUserRole(user.role);
       setUserEmail(user.email || null);
       setIsAuthenticated(true);
 
-      // Persist
       localStorage.setItem('token', jwt);
       localStorage.setItem('role', user.role);
       localStorage.setItem('email', user.email || '');
 
-      // Set default header
-      axios.defaults.headers.common['Authorization'] = `Bearer ${jwt}`;
+      api.defaults.headers.common['Authorization'] = `Bearer ${jwt}`;
 
       return true;
     } catch (err) {
@@ -59,7 +57,6 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // Log out
   const logout = () => {
     setIsAuthenticated(false);
     setUserRole(null);
@@ -68,7 +65,7 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem('token');
     localStorage.removeItem('role');
     localStorage.removeItem('email');
-    delete axios.defaults.headers.common['Authorization'];
+    delete api.defaults.headers.common['Authorization'];
   };
 
   return (

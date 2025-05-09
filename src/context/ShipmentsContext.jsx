@@ -1,6 +1,6 @@
 // src/context/ShipmentsContext.jsx
 import React, { createContext, useState, useEffect, useContext } from 'react';
-import axios from 'axios';
+import api from '../api.js';
 import { AuthContext } from './AuthContext';
 
 export const ShipmentsContext = createContext({
@@ -20,21 +20,13 @@ export const ShipmentsProvider = ({ children }) => {
   const [loading, setLoading]     = useState(false);
   const [error, setError]         = useState(null);
 
-  // Helper to get auth headers
-  const authHeaders = () => ({
-    headers: { Authorization: `Bearer ${token}` }
-  });
-
-  // Fetch all shipments for this user
+  // Fetch all shipments: admin gets all, user gets only their own
   const fetchShipments = async () => {
     if (!token) return;
     setLoading(true);
     setError(null);
     try {
-      const res = await axios.get(
-        'http://localhost:5000/api/shipments',
-        authHeaders()
-      );
+      const res = await api.get('/shipments');
       setShipments(res.data);
     } catch (err) {
       setError(err.response?.data?.message || err.message);
@@ -44,6 +36,7 @@ export const ShipmentsProvider = ({ children }) => {
   };
 
   useEffect(() => {
+    // whenever token changes, reload shipments
     fetchShipments();
   }, [token]);
 
@@ -53,11 +46,8 @@ export const ShipmentsProvider = ({ children }) => {
     setLoading(true);
     setError(null);
     try {
-      const res = await axios.post(
-        'http://localhost:5000/api/shipments',
-        data,
-        authHeaders()
-      );
+      const res = await api.post('/shipments', data);
+      // append new to local state
       setShipments(prev => [...prev, res.data]);
       return res.data;
     } catch (err) {
@@ -68,21 +58,15 @@ export const ShipmentsProvider = ({ children }) => {
     }
   };
 
-  // Update an existing shipment (admin only)
+  // Update shipment status (admin only)
   const updateShipment = async (id, newStatus) => {
     if (!token) throw new Error('Not authenticated');
     if (userRole !== 'admin') throw new Error('Forbidden');
     setLoading(true);
     setError(null);
     try {
-      const res = await axios.patch(
-        `http://localhost:5000/api/shipments/${id}`,
-        { status: newStatus },
-        authHeaders()
-      );
-      setShipments(prev =>
-        prev.map(s => (s._id === id ? res.data : s))
-      );
+      const res = await api.patch(`/shipments/${id}`, { status: newStatus });
+      setShipments(prev => prev.map(s => (s._id === id ? res.data : s)));
       return res.data;
     } catch (err) {
       setError(err.response?.data?.message || err.message);
@@ -99,10 +83,7 @@ export const ShipmentsProvider = ({ children }) => {
     setLoading(true);
     setError(null);
     try {
-      await axios.delete(
-        `http://localhost:5000/api/shipments/${id}`,
-        authHeaders()
-      );
+      await api.delete(`/shipments/${id}`);
       setShipments(prev => prev.filter(s => s._id !== id));
     } catch (err) {
       setError(err.response?.data?.message || err.message);
@@ -112,16 +93,13 @@ export const ShipmentsProvider = ({ children }) => {
     }
   };
 
-  // Fetch a single shipment by ID
+  // Get a single shipment by ID
   const getShipmentById = async (id) => {
     if (!token) throw new Error('Not authenticated');
     setLoading(true);
     setError(null);
     try {
-      const res = await axios.get(
-        `http://localhost:5000/api/shipments/${id}`,
-        authHeaders()
-      );
+      const res = await api.get(`/shipments/${id}`);
       return res.data;
     } catch (err) {
       setError(err.response?.data?.message || err.message);

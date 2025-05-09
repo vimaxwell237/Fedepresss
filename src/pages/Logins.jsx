@@ -1,15 +1,15 @@
 // src/pages/Logins.jsx
 import React, { useState, useContext } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { AuthContext } from '../context/AuthContext';  // ← pull in your context
+import { AuthContext }       from '../context/AuthContext';
 import './Auth.css';
 
 const Logins = () => {
-  const { login } = useContext(AuthContext);
-  const [form, setForm] = useState({ email: '', password: '' });
-  const [error, setError] = useState('');
+  const { login }             = useContext(AuthContext);
+  const [form, setForm]       = useState({ email: '', password: '' });
+  const [error, setError]     = useState('');
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
+  const navigate              = useNavigate();
 
   const handleChange = e => {
     setForm(f => ({ ...f, [e.target.name]: e.target.value }));
@@ -20,7 +20,7 @@ const Logins = () => {
     setError('');
     setLoading(true);
 
-    // Call your context’s login, passing role='user'
+    // role='user' → calls your /auth/login endpoint with { role,email,password }
     const ok = await login({
       role: 'user',
       email: form.email,
@@ -28,12 +28,8 @@ const Logins = () => {
     });
 
     setLoading(false);
-
-    if (ok) {
-      navigate('/dashboard');
-    } else {
-      setError('Invalid credentials');
-    }
+    if (ok) navigate('/dashboard');
+    else setError('Invalid credentials');
   };
 
   return (
